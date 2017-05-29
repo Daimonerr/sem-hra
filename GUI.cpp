@@ -1,6 +1,6 @@
 #include "GUI.h"
 
-CGame::CGame()
+CGame::CGame(): c_score(0), c_cntObst(0)
 {
 	initscr();
 	curs_set(0);
@@ -73,6 +73,8 @@ void CGame::runGame()
 		BattleShip.clearShip();
 		BattleShip.moveShip();
 		BattleShip.moveBullets();
+		BattleShip.bulletHit(obstacles, c_cntObst, c_score);
+		drawScore();
 
 		cntTime.addTime();
 	//		BattleShip.fire();
@@ -200,4 +202,9 @@ void CGame::moveObstacles()
 			i--;
 		}
 	}
+}
+
+void CGame::drawScore()
+{
+	mvprintw(9,70,"%d", c_score);
 }

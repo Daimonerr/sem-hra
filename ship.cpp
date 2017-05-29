@@ -128,3 +128,21 @@ void CShip::moveShip()
 
 
 }
+
+
+void CShip::bulletHit(vector<CObstacle> & obstacles, int & c_cntObst, int & c_score)
+{
+	for (int i = 0; i < cntBullets; i++)
+	{
+
+		if(ammo[i].collision(obstacles, c_cntObst))
+		{
+			cntBullets--;
+			ammo[i].clearBullet();
+			ammo.erase(ammo.begin()+i);
+			i--;
+			c_score += 20;
+
+		}
+	}
+}

@@ -64,3 +64,14 @@ bool CObstacle::isOnEdge()
 	}
 	return false;
 }
+
+bool CObstacle::collide(const int & y, const int & x)
+{
+	for (int i = 0; i < obstLength; i++)
+	{
+		if ( obstObj[i].posY == y && obstObj[i].posX == x)
+			return true;
+	}
+
+	return false;
+}

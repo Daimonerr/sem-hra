@@ -16,6 +16,7 @@ class CGame {
 		void runGame();
 		void drawMap();
 		void collision();
+		void drawScore();
 
 	private:
 		void moveObstacles();

@@ -18,6 +18,7 @@ class CObstacle {
 		void clearObst();
 		bool moveObst(CTimer & cntTime);
 		bool isOnEdge();
+		bool collide(const int & y, const int & x);
 	private:
 		void buildPart(const int & Y,const int & X,const char & part);
 		

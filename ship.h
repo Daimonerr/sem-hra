@@ -14,6 +14,7 @@ class CShip {
 		void newBullet();
 		void moveBullets();
 		void moveShip();
+		void bulletHit(vector<CObstacle> & obstacles, int & cntObst, int & c_score);
 	private:
 		vector<YXPART> ship;
 		vector<CBullet> ammo;
