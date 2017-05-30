@@ -6,6 +6,7 @@
 #include "timer.h"
 
 struct YXPART{
+	YXPART(const int & y, const int & x, const char & c);
 	int posY;
 	int posX;
 	char partChar;
@@ -13,14 +14,14 @@ struct YXPART{
 
 class CObstacle {
 	public:
-		CObstacle(const int & y, const int & x);
-		void printObst();
-		void clearObst();
+		CObstacle(const int & y, const int & x, const int & sp);
+		void printObst()const;
+		void clearObst()const;
 		bool moveObst(CTimer & cntTime);
-		bool isOnEdge();
-		bool collide(const int & y, const int & x);
+		bool isOnEdge()const;
+		bool collide(const int & y, const int & x)const;
 	private:
-		void buildPart(const int & Y,const int & X,const char & part);
+		void buildPart(const int & y,const int & x,const char & part);
 		
 		vector<YXPART> obstObj;
 		int health;

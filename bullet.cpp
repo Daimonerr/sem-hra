@@ -24,11 +24,10 @@ bool CBullet::collision(vector<CObstacle> & obstacles, int & cntObst)
 		if ( obstacles[i].collide(c_posY, c_posX))
 		{
 			obstacles[i].clearObst();
-			obstacles.erase(obstacles.begin()+i);
+			obstacles.erase(obstacles.begin()+i);           //111111111111111111111111111111
 			cntObst--;
-			i--;
 
-//			mvaddch(11,11,'X');
+
 			return true;
 		}
 	}

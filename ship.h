@@ -9,16 +9,17 @@ class CShip {
 	public:
 		CShip();
 	//	~CShip();
-		void printShip();
-		void clearShip();
+		void printShip()const;
+		void clearShip()const;
 		void newBullet();
 		void moveBullets();
-		void moveShip();
+		void shipControll();
 		void bulletHit(vector<CObstacle> & obstacles, int & cntObst, int & c_score);
+		bool shipHit(vector<CObstacle> & obstacles, int & cntObst);
 	private:
 		vector<YXPART> ship;
 		vector<CBullet> ammo;
-		void buildPart(const int & Y,const int & X,const char & part);
+		void buildPart(const int & y,const int & x,const char & part);
 
 		int cntBullets;
 		int shipLength;

@@ -39,3 +39,8 @@ int CTimer::getMsec()
 {
 	return c_msec;
 }
+
+int CTimer::getPlaytime()
+{
+	return c_playtime;
+}

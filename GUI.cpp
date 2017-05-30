@@ -9,12 +9,7 @@ CGame::CGame(): c_score(0), c_cntObst(0)
 	mvprintw(25,35,"Press any key to start");
 	getch();
 
-//	int maxY,maxX;
 	keypad(stdscr, true);
-//	getmaxyx(stdscr, maxY,maxX);
-
-
-//-------OKNO PRO VYBRANI LODI
 
 
 }
@@ -23,7 +18,6 @@ CGame::CGame(): c_score(0), c_cntObst(0)
 CGame::~CGame()
 {
 	nodelay(stdscr, false);
-//	delwin(win);
 	endwin();
 
 }
@@ -36,14 +30,35 @@ void CGame::runGame()
 	nodelay(stdscr,true);
 
 	CShip BattleShip;
+//------------------------------------------
+	fileObjs = 10;
+	LOADLEVEL tmp(2,5,3,33);
+	LOADLEVEL tmp2(2,10,3,33);
+	LOADLEVEL tmp3(2,15,3,33);
+	LOADLEVEL tmp4(2,20,3,33);
+	LOADLEVEL tmp5(2,25,3,33);
 
-	CObstacle tmp(2,10);
-	obstacles.push_back(tmp);
-	CObstacle tmp2(2,20);
-	obstacles.push_back(tmp2);
 
-	c_cntObst = 2;
+	LOADLEVEL tmp6(2,5,10,33);
+	LOADLEVEL tmp7(2,10,10,22);
+	LOADLEVEL tmp8(2,15,12,33);
+	LOADLEVEL tmp9(2,20,12,20);
+	LOADLEVEL tmp10(2,25,14,20);
+	
+	file.push_back(tmp);
+	file.push_back(tmp2);
+	file.push_back(tmp3);
+	file.push_back(tmp4);
+	file.push_back(tmp5);
+	file.push_back(tmp6);
+	file.push_back(tmp7);
+	file.push_back(tmp8);
+	file.push_back(tmp9);
+	file.push_back(tmp10);
 
+	
+
+//------------------------------------------
 	drawMap();
 	
 
@@ -52,8 +67,10 @@ void CGame::runGame()
 
 		BattleShip.printShip();
 
-		mvprintw(4,66,"%s", cntTime.printTime().c_str());	
+		spawnObstacles();
 		
+
+		mvprintw(4,66,"%s", cntTime.printTime().c_str());	
 
 
 		moveObstacles();
@@ -61,22 +78,19 @@ void CGame::runGame()
 		refresh();
 		usleep(10000);
 
-//		collision();
-
-//		for (int i = 0; i < c_cntObst; i++)
-//			obstacles[i].clearObst();
-
-
-
-		//		obst.moveObst(cntTime);
 
 		BattleShip.clearShip();
-		BattleShip.moveShip();
+		BattleShip.shipControll();
 		BattleShip.moveBullets();
 		BattleShip.bulletHit(obstacles, c_cntObst, c_score);
+		////////////////////////////////////////////////////////////
+		if (BattleShip.shipHit(obstacles, c_cntObst))
+			return;
+		////////////////////////////////////////////////////////////
 		drawScore();
 
 		cntTime.addTime();
+
 	//		BattleShip.fire();
 		
 
@@ -175,21 +189,6 @@ void CGame::drawMap()
 	refresh();
 }
 
-void CGame::collision()
-{
-
-	for (int i = 0; i<c_cntObst; i++)
-	{
-		if (obstacles[i].isOnEdge())
-		{
-			c_cntObst--;
-			obstacles.erase(obstacles.begin()+i);
-			i--;
-		}
-	}
- 
-}
-
 void CGame::moveObstacles()
 {
 
@@ -197,8 +196,7 @@ void CGame::moveObstacles()
 	{
 		if( ! obstacles[i].moveObst(cntTime))
 		{
-			c_cntObst--;
-			obstacles.erase(obstacles.begin()+i);
+			deleteObst(i);
 			i--;
 		}
 	}
@@ -207,4 +205,25 @@ void CGame::moveObstacles()
 void CGame::drawScore()
 {
 	mvprintw(9,70,"%d", c_score);
+}
+
+void CGame::deleteObst(const int & i)
+{
+	obstacles.erase(obstacles.begin()+i);
+	c_cntObst--;
+}
+
+
+void CGame::spawnObstacles()
+{
+	for (int i = 0; i < fileObjs; i++)
+	{
+		if ( file[i].time == cntTime.getPlaytime() && cntTime.getMsec() == 0 )
+		{
+			CObstacle tmp5(file[i].y,file[i].x, file[i].sp);
+			obstacles.push_back(tmp5);
+			c_cntObst++;
+		}
+	}
+
 }

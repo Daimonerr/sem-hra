@@ -1,8 +1,13 @@
 #include "obstacle.h"
 
+YXPART::YXPART(const int & y, const int & x, const char & c)
+{
+	posY = y;
+	posX = x;
+	partChar = c;
+}
 
-
-CObstacle::CObstacle(const int & y, const int & x): health(3), obstLength(6), speed(5)
+CObstacle::CObstacle(const int & y, const int & x, const int & sp): health(3), obstLength(6), speed(sp)
 {
 	buildPart(y,x, '#');
 	buildPart(y,x+1, '#');
@@ -12,14 +17,14 @@ CObstacle::CObstacle(const int & y, const int & x): health(3), obstLength(6), sp
 	buildPart(y+1,x+2, '#');
 }
 
-void CObstacle::printObst()
+void CObstacle::printObst()const
 {
 	for (int i = 0; i < obstLength; i++)
 		mvaddch(obstObj[i].posY, obstObj[i].posX, obstObj[i].partChar);
 	
 }
 
-void CObstacle::clearObst()
+void CObstacle::clearObst()const
 {
 	for (int i = 0; i < obstLength; i++)
 		mvaddch(obstObj[i].posY, obstObj[i].posX, ' ');
@@ -28,10 +33,9 @@ void CObstacle::clearObst()
 
 bool CObstacle::moveObst(CTimer & cntTime)
 {	
-	if (cntTime.getMsec() % 33 == 1)
+	if (cntTime.getMsec() % speed == 0 && cntTime.getMsec() != 0)
 	{	
-		if ( isOnEdge() )
-			return false;
+		if (isOnEdge()) return false;
 
 		clearObst();
 		for (int i = 0; i < obstLength; i++)
@@ -46,16 +50,13 @@ bool CObstacle::moveObst(CTimer & cntTime)
 }
 
 
-void CObstacle::buildPart(const int & Y,const int & X,const char & part)
+void CObstacle::buildPart(const int & y,const int & x,const char & part)
 {
-	YXPART tmp;
-	tmp.posY=Y;
-	tmp.posX=X;
-	tmp.partChar=part;
+	YXPART tmp(y,x,part);
 	obstObj.push_back(tmp);
 }
 
-bool CObstacle::isOnEdge()
+bool CObstacle::isOnEdge()const
 {
 	if(obstObj[2].posY == 44)
 	{
@@ -65,7 +66,7 @@ bool CObstacle::isOnEdge()
 	return false;
 }
 
-bool CObstacle::collide(const int & y, const int & x)
+bool CObstacle::collide(const int & y, const int & x)const
 {
 	for (int i = 0; i < obstLength; i++)
 	{

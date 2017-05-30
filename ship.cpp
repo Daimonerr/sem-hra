@@ -30,16 +30,13 @@ CShip::CShip (): cntBullets(0), shipLength(21)
 	buildPart(43,32,'^');
 }
 
-void CShip::buildPart(const int & Y,const int & X,const char & part)
+void CShip::buildPart(const int & y,const int & x,const char & part)
 {
-	YXPART tmp;
-	tmp.posY=Y;
-	tmp.posX=X;
-	tmp.partChar=part;
+	YXPART tmp(y,x,part);
 	ship.push_back(tmp);
 }
 
-void CShip::printShip()
+void CShip::printShip()const
 {
 	for (int i = 0; i < shipLength; i++)
 	{
@@ -48,7 +45,7 @@ void CShip::printShip()
 	}
 }
 
-void CShip::clearShip()
+void CShip::clearShip()const
 {
 	for (int i = 0; i < shipLength; i++)
 	{
@@ -80,7 +77,7 @@ void CShip::moveBullets()
 
 }
 
-void CShip::moveShip()
+void CShip::shipControll()
 {
 	int direction = getch();
 
@@ -96,24 +93,22 @@ void CShip::moveShip()
 			}
 			break;
 		case KEY_DOWN:
-			if (ship[14].posY == 44 )
-				break;
-			for (int i = 0; i < 21; i++)
-			{
+			if (ship[14].posY == 44 ) break;
+			
+			for (int i = 0; i < 21; i++){
 				ship[i].posY += 1;
 			}
+			
 			break;
 		case KEY_LEFT:
-			if (ship[14].posX == 2 )
-				break;
+			if (ship[14].posX == 2 ) break;
 			for (int i = 0; i < 21; i++)
 			{
 				ship[i].posX -= 2;
 			}
 			break;
 		case KEY_RIGHT:
-			if (ship[20].posX == 58 )
-				break;
+			if (ship[20].posX == 58 ) break;
 			for (int i = 0; i < 21; i++)
 			{
 				ship[i].posX += 2;
@@ -139,10 +134,29 @@ void CShip::bulletHit(vector<CObstacle> & obstacles, int & c_cntObst, int & c_sc
 		{
 			cntBullets--;
 			ammo[i].clearBullet();
-			ammo.erase(ammo.begin()+i);
+			ammo.erase(ammo.begin()+i);            //111111111111111111111111111111
 			i--;
 			c_score += 20;
 
 		}
 	}
+}
+
+bool CShip::shipHit(vector<CObstacle> & obstacles, int & cntObst)
+{
+	for ( int i = 0; i < shipLength; i++)
+	{
+		for( int j = 0; j < cntObst; j++)
+		{
+			if (obstacles[j].collide(ship[i].posY,ship[i].posX))
+			{
+				obstacles.erase(obstacles.begin()+j);           //111111111111111111111111111111
+				cntObst--;
+				return true;
+				
+
+			}
+		}
+	}
+	return false;
 }

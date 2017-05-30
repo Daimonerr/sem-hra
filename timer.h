@@ -14,6 +14,7 @@ class CTimer {
 		void resetTime();
 		string printTime();
 		int getMsec();
+		int getPlaytime();
 
 	private:
 		int c_min;
