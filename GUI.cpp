@@ -31,19 +31,20 @@ void CGame::runGame()
 
 	CShip BattleShip;
 //------------------------------------------
-	fileObjs = 10;
-	LOADLEVEL tmp(2,5,3,33);
-	LOADLEVEL tmp2(2,10,3,33);
-	LOADLEVEL tmp3(2,15,3,33);
-	LOADLEVEL tmp4(2,20,3,33);
-	LOADLEVEL tmp5(2,25,3,33);
+	fileObjs = 5;
+/*
+	LOADLEVEL tmp(5,3,33);
+	LOADLEVEL tmp2(10,3,33);
+	LOADLEVEL tmp3(15,3,33);
+	LOADLEVEL tmp4(20,3,33);
+	LOADLEVEL tmp5(25,3,33);
 
 
-	LOADLEVEL tmp6(2,5,10,33);
-	LOADLEVEL tmp7(2,10,10,22);
-	LOADLEVEL tmp8(2,15,12,33);
-	LOADLEVEL tmp9(2,20,12,20);
-	LOADLEVEL tmp10(2,25,14,20);
+	LOADLEVEL tmp6(5,10,33);
+	LOADLEVEL tmp7(10,10,22);
+	LOADLEVEL tmp8(15,12,33);
+	LOADLEVEL tmp9(20,12,20);
+	LOADLEVEL tmp10(25,14,20);
 	
 	file.push_back(tmp);
 	file.push_back(tmp2);
@@ -55,7 +56,7 @@ void CGame::runGame()
 	file.push_back(tmp8);
 	file.push_back(tmp9);
 	file.push_back(tmp10);
-
+*/
 	
 
 //------------------------------------------
@@ -151,7 +152,8 @@ void CGame::startMenu()
 	mvprintw(37,10,"F               - to shoot");
 	mvprintw(39,10,"P               - to pause the game");
 	
-	
+	if ( ! getFile() )
+		mvprintw(3,3,"Invalid file.");
 	getch();
 }
 
@@ -226,4 +228,55 @@ void CGame::spawnObstacles()
 		}
 	}
 
+}
+
+bool CGame::getFile()
+{
+	char input[50];
+//	ifstream lvlFile;
+	FILE *lvlFile;
+	int i = 0;
+	
+	getstr(input);
+//	lvlFile.open( input );
+//-----------KONTROLY VSTUPU, ZAPISOVANI..... ---------
+//	if ( ! (lvlFile.is_open()) ) return false;
+//	lvlFile.seekg(0, lvlFile.beg);
+
+	lvlFile = fopen(input,"r");
+//	if(fscanf(fp, "%d %d %d", &test.x, &test.time, &test.sp) != 3)
+//		return false;
+//	mvprintw(2, 10, "%d %d %d", test.x, test.time, test.sp);
+	
+	int a,b,c;
+	while ( i != 5 )
+	{
+		fscanf(lvlFile, "%d %d %d", &a, &b, &c);
+
+		LOADLEVEL test(a,b,c);
+		file.push_back(test);
+
+	}
+
+	fclose(lvlFile);
+
+	/*
+	while(fscanf(lvlFile, "%d %d %d", test.x, test.time, test.sp))
+	{
+		LOADLEVEL test;
+		lvlFile >> test.x;
+		lvlFile >> test.time;
+		lvlFile >> test.sp;
+		if (test.x < 2 && test.x > 50)
+			return false;
+	//	if (test.time < 2 && test.time > 50)
+		if (test.sp < 10 && test.x > 99)
+			return false;
+				
+	}*/
+//	mvprintw(5,3,body);
+//	mvprintw(2,2,"%d", test.);
+
+//	delete[] body;
+	return true;
 }

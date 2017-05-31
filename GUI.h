@@ -4,15 +4,22 @@
 
 #include <cstdlib>
 #include <unistd.h>
+#include <string>
+#include <fstream>
+#include <algorithm>
+#include <sstream>
+#include <stdio.h>
 #include "ship.h"
 
 using namespace std;
 
 struct LOADLEVEL{
-	LOADLEVEL(const int & a, const int & b, const int & tik, const int & speedo)
+	LOADLEVEL(): y(0), x(0), time(0), sp(0)
+	{}
+	LOADLEVEL(const int & a, const int & tik, const int & speedo)
 	{
-		y=a;
-		x=b;
+		y=2;
+		x=a;
 		time=tik;
 		sp = speedo;
 	}
@@ -41,10 +48,12 @@ class CGame {
 						const int & startX, 
 						const char & printChar);
 		void startMenu();
+		bool getFile();
 //		int mapX,mapY;
 		vector<CObstacle> obstacles;
 		int c_score, c_cntObst, c_health;
 		CTimer cntTime;
+
 
 		///////////////
 		vector<LOADLEVEL> file;
