@@ -57,7 +57,7 @@ class CGame {
 
 		///////////////
 		vector<LOADLEVEL> file;
-		int fileObjs;
+		int c_cntFileObjs;
 };
 
 

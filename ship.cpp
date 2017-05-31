@@ -4,30 +4,30 @@
 
 CShip::CShip (): cntBullets(0), shipLength(21)
 {
-	buildPart(40,28,'|');
-	buildPart(40,30,'|');
+	buildPart(40,27,'|');
+	buildPart(40,29,'|');
 
-	buildPart(41,27,'/');
-	buildPart(41,28,'#');
-	buildPart(41,29,'A');
-	buildPart(41,30,'#');
-	buildPart(41,31,'\\');
+	buildPart(41,26,'/');
+	buildPart(41,27,'#');
+	buildPart(41,28,'A');
+	buildPart(41,29,'#');
+	buildPart(41,30,'\\');
 
+	buildPart(42,25,'/');
 	buildPart(42,26,'/');
-	buildPart(42,27,'/');
-	buildPart(42,28,'O');
-	buildPart(42,29,'|');
-	buildPart(42,30,'O');
+	buildPart(42,27,'O');
+	buildPart(42,28,'|');
+	buildPart(42,29,'O');
+	buildPart(42,30,'\\');
 	buildPart(42,31,'\\');
-	buildPart(42,32,'\\');
 
+	buildPart(43,25,'^');
 	buildPart(43,26,'^');
 	buildPart(43,27,'^');
 	buildPart(43,28,'^');
 	buildPart(43,29,'^');
 	buildPart(43,30,'^');
 	buildPart(43,31,'^');
-	buildPart(43,32,'^');
 }
 
 void CShip::buildPart(const int & y,const int & x,const char & part)
@@ -101,14 +101,14 @@ void CShip::shipControll()
 			
 			break;
 		case KEY_LEFT:
-			if (ship[14].posX == 2 ) break;
+			if (ship[14].posX == 1 ) break;
 			for (int i = 0; i < 21; i++)
 			{
 				ship[i].posX -= 2;
 			}
 			break;
 		case KEY_RIGHT:
-			if (ship[20].posX == 58 ) break;
+			if (ship[20].posX == 59 ) break;
 			for (int i = 0; i < 21; i++)
 			{
 				ship[i].posX += 2;

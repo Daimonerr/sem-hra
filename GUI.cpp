@@ -1,13 +1,8 @@
 #include "GUI.h"
 
-CGame::CGame(): c_score(0), c_cntObst(0)
+CGame::CGame(): c_score(0), c_cntObst(0), c_cntFileObjs(0)
 {
 	initscr();
-	curs_set(0);
-	noecho();
-
-	mvprintw(25,35,"Press any key to start");
-	getch();
 
 	keypad(stdscr, true);
 
@@ -27,39 +22,12 @@ void CGame::runGame()
 
 	startMenu();
 	clear();
+	noecho();
 	nodelay(stdscr,true);
+	curs_set(0);
 
-	CShip BattleShip;
-//------------------------------------------
-	fileObjs = 5;
-/*
-	LOADLEVEL tmp(5,3,33);
-	LOADLEVEL tmp2(10,3,33);
-	LOADLEVEL tmp3(15,3,33);
-	LOADLEVEL tmp4(20,3,33);
-	LOADLEVEL tmp5(25,3,33);
+	CShip BattleShip;	
 
-
-	LOADLEVEL tmp6(5,10,33);
-	LOADLEVEL tmp7(10,10,22);
-	LOADLEVEL tmp8(15,12,33);
-	LOADLEVEL tmp9(20,12,20);
-	LOADLEVEL tmp10(25,14,20);
-	
-	file.push_back(tmp);
-	file.push_back(tmp2);
-	file.push_back(tmp3);
-	file.push_back(tmp4);
-	file.push_back(tmp5);
-	file.push_back(tmp6);
-	file.push_back(tmp7);
-	file.push_back(tmp8);
-	file.push_back(tmp9);
-	file.push_back(tmp10);
-*/
-	
-
-//------------------------------------------
 	drawMap();
 	
 
@@ -123,7 +91,7 @@ void CGame::startMenu()
 {
 	drawSquare(45, 60, 0, 0, (char)219);
 	attron(A_BOLD);
-	mvprintw(10,22,"PRESS ANY KEY TO START");
+	mvprintw(10,13,"PLEASE WRITE NAME OF THE LEVEL FILE");
 	attroff(A_BOLD);
 
 
@@ -151,9 +119,16 @@ void CGame::startMenu()
 	mvprintw(35,10,"Lower Arrow-Key - to move down");
 	mvprintw(37,10,"F               - to shoot");
 	mvprintw(39,10,"P               - to pause the game");
-	
-	if ( ! getFile() )
-		mvprintw(3,3,"Invalid file.");
+	move(11,22);
+	while ( ! getFile())
+	{
+		mvprintw(11,22,"                        ");
+		mvprintw(13,17,"Invalid file. Try again.");
+		move(11,22);
+	}
+
+	mvprintw(13,7,"Successfuly loaded. Press any key to continue.");
+		
 	getch();
 }
 
@@ -218,7 +193,7 @@ void CGame::deleteObst(const int & i)
 
 void CGame::spawnObstacles()
 {
-	for (int i = 0; i < fileObjs; i++)
+	for (int i = 0; i < c_cntFileObjs; i++)
 	{
 		if ( file[i].time == cntTime.getPlaytime() && cntTime.getMsec() == 0 )
 		{
@@ -232,51 +207,31 @@ void CGame::spawnObstacles()
 
 bool CGame::getFile()
 {
-	char input[50];
-//	ifstream lvlFile;
+	char input[21];
+	int controll;
+	int a,b,c;
 	FILE *lvlFile;
-	int i = 0;
-	
-	getstr(input);
-//	lvlFile.open( input );
-//-----------KONTROLY VSTUPU, ZAPISOVANI..... ---------
-//	if ( ! (lvlFile.is_open()) ) return false;
-//	lvlFile.seekg(0, lvlFile.beg);
+	getnstr(input,20);
 
 	lvlFile = fopen(input,"r");
-//	if(fscanf(fp, "%d %d %d", &test.x, &test.time, &test.sp) != 3)
-//		return false;
-//	mvprintw(2, 10, "%d %d %d", test.x, test.time, test.sp);
-	
-	int a,b,c;
-	while ( i != 5 )
+	if (lvlFile == NULL)
+		return false;
+
+	c_cntFileObjs = 0;
+
+	while ( (controll = fscanf(lvlFile, "%d %d %d ", &a, &b, &c)) != EOF )
 	{
-		fscanf(lvlFile, "%d %d %d", &a, &b, &c);
-
-		LOADLEVEL test(a,b,c);
-		file.push_back(test);
-
+		if (controll < 3)
+		{
+			fclose(lvlFile);
+			return false;
+		}
+		LOADLEVEL tmp(a,b,c);
+		file.push_back(tmp);
+		c_cntFileObjs++;
 	}
-
+	
 	fclose(lvlFile);
 
-	/*
-	while(fscanf(lvlFile, "%d %d %d", test.x, test.time, test.sp))
-	{
-		LOADLEVEL test;
-		lvlFile >> test.x;
-		lvlFile >> test.time;
-		lvlFile >> test.sp;
-		if (test.x < 2 && test.x > 50)
-			return false;
-	//	if (test.time < 2 && test.time > 50)
-		if (test.sp < 10 && test.x > 99)
-			return false;
-				
-	}*/
-//	mvprintw(5,3,body);
-//	mvprintw(2,2,"%d", test.);
-
-//	delete[] body;
 	return true;
 }
