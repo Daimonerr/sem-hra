@@ -35,8 +35,6 @@ class CGame {
 		~CGame();
 		void runGame();
 		void drawMap();
-//		void obstacleOut();
-		void drawScore();
 
 	private:
 		void moveObstacles();
@@ -49,10 +47,15 @@ class CGame {
 						const char & printChar);
 		void startMenu();
 		bool getFile();
+		void printUtilities();
+		bool gameOver();
+		void gameEnding();
 //		int mapX,mapY;
 		vector<CObstacle> obstacles;
-		int c_score, c_cntObst, c_health;
+		int c_score, c_cntObst, c_health, c_remainObst;
+		char c_nickname[20],c_mapName[20];
 		CTimer cntTime;
+		CShip BattleShip;	
 
 
 		///////////////

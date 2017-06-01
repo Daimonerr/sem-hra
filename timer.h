@@ -2,6 +2,7 @@
 #define TIMER_H
 
 #include <string>
+#include "object.h"
 using namespace std;
 
 

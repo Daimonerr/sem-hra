@@ -38,19 +38,15 @@ void CShip::buildPart(const int & y,const int & x,const char & part)
 
 void CShip::printShip()const
 {
-	for (int i = 0; i < shipLength; i++)
-	{
-		move(ship[i].posY, ship[i].posX);
-		addch(ship[i].partChar);
+	for (int i = 0; i < shipLength; i++){
+		mvaddch(ship[i].posY, ship[i].posX,ship[i].partChar);
 	}
 }
 
 void CShip::clearShip()const
 {
-	for (int i = 0; i < shipLength; i++)
-	{
-		move(ship[i].posY, ship[i].posX);
-		addch(' ');
+	for (int i = 0; i < shipLength; i++){
+		mvaddch(ship[i].posY, ship[i].posX,' ');
 	}
 }
 
@@ -58,8 +54,8 @@ void CShip::newBullet()
 {
 	CBullet tmp(ship[4].posY -1, ship[4].posX);
 
-		ammo.push_back(tmp);
-		cntBullets++;
+	ammo.push_back(tmp);
+	cntBullets++;
 }
 
 void CShip::moveBullets()
@@ -150,6 +146,7 @@ bool CShip::shipHit(vector<CObstacle> & obstacles, int & cntObst)
 		{
 			if (obstacles[j].collide(ship[i].posY,ship[i].posX))
 			{
+				obstacles[j].clearObst();
 				obstacles.erase(obstacles.begin()+j);           //111111111111111111111111111111
 				cntObst--;
 				return true;

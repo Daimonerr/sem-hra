@@ -1,12 +1,12 @@
 #include "GUI.h"
 
-CGame::CGame(): c_score(0), c_cntObst(0), c_cntFileObjs(0)
+CGame::CGame(): c_score(0), c_cntObst(0), c_health(3), c_remainObst(0), c_cntFileObjs(0)
 {
 	initscr();
-
-	keypad(stdscr, true);
-
-
+	c_nickname[0]='\0';
+	c_mapName[0]='\0';
+	printw("Enter your nickname: ");
+	getnstr(c_nickname, 19);
 }
 
 
@@ -14,7 +14,6 @@ CGame::~CGame()
 {
 	nodelay(stdscr, false);
 	endwin();
-
 }
 
 void CGame::runGame()
@@ -25,13 +24,12 @@ void CGame::runGame()
 	noecho();
 	nodelay(stdscr,true);
 	curs_set(0);
-
-	CShip BattleShip;	
+	keypad(stdscr, true);
 
 	drawMap();
 	
 
-	while(1)
+	while( ! gameOver())
 	{
 
 		BattleShip.printShip();
@@ -39,8 +37,7 @@ void CGame::runGame()
 		spawnObstacles();
 		
 
-		mvprintw(4,66,"%s", cntTime.printTime().c_str());	
-
+		printUtilities();
 
 		moveObstacles();
 
@@ -54,16 +51,14 @@ void CGame::runGame()
 		BattleShip.bulletHit(obstacles, c_cntObst, c_score);
 		////////////////////////////////////////////////////////////
 		if (BattleShip.shipHit(obstacles, c_cntObst))
-			return;
+			c_health--;
 		////////////////////////////////////////////////////////////
-		drawScore();
 
 		cntTime.addTime();
-
-	//		BattleShip.fire();
-		
-
 	}
+
+	gameEnding();
+
 
 }
 
@@ -136,32 +131,22 @@ void CGame::startMenu()
 void CGame::drawMap()
 {
 //----------------------------------VYKRESLENI MAPY
-	int score;
-	score = 0;
 
 	drawSquare(45, 60, 0, 0, (char)219);
 	drawSquare(45, 15, 0, 60, (char)219);
 
-	/*
-	for (int i = 0; i<80; i++)
-	{
-		move (0,i);
-		addch(border);
-		move (50,i);
-		addch(border);
-	}
-*/
 //---------------------------------VYKRESLENI PANELU
 	
 	attron(A_BOLD);
 	attron(A_UNDERLINE);
+	
 	mvprintw(3,66,"TIME");
+	mvprintw(7,65,"REMAIN");
+	mvprintw(11,66,"SCORE");
+//	mvprintw(12,65,"BONUS");
+	mvprintw(38,65,"HEALTH");
+
 	attroff(A_UNDERLINE);
-	mvprintw(9,63,"SCORE: %d", score);
-	mvprintw(12,63,"BONUS: %d", score);
-	mvprintw(15,63,"SHIP: %d", score);
-
-
 	attroff(A_BOLD);
 	refresh();
 }
@@ -179,10 +164,6 @@ void CGame::moveObstacles()
 	}
 }
 
-void CGame::drawScore()
-{
-	mvprintw(9,70,"%d", c_score);
-}
 
 void CGame::deleteObst(const int & i)
 {
@@ -200,6 +181,7 @@ void CGame::spawnObstacles()
 			CObstacle tmp5(file[i].y,file[i].x, file[i].sp);
 			obstacles.push_back(tmp5);
 			c_cntObst++;
+			c_remainObst--;
 		}
 	}
 
@@ -207,31 +189,73 @@ void CGame::spawnObstacles()
 
 bool CGame::getFile()
 {
-	char input[21];
 	int controll;
 	int a,b,c;
-	FILE *lvlFile;
-	getnstr(input,20);
+	FILE *mapFile;
+	getnstr(c_mapName,19);
 
-	lvlFile = fopen(input,"r");
-	if (lvlFile == NULL)
+	mapFile = fopen(c_mapName,"r");
+	if (mapFile == NULL)
 		return false;
 
 	c_cntFileObjs = 0;
 
-	while ( (controll = fscanf(lvlFile, "%d %d %d ", &a, &b, &c)) != EOF )
+	while ( (controll = fscanf(mapFile, "%d %d %d ", &a, &b, &c)) != EOF )
 	{
 		if (controll < 3)
 		{
-			fclose(lvlFile);
+			fclose(mapFile);
 			return false;
 		}
 		LOADLEVEL tmp(a,b,c);
 		file.push_back(tmp);
 		c_cntFileObjs++;
 	}
-	
-	fclose(lvlFile);
+
+
+	if (c_cntFileObjs == 0)
+		return false;
+
+	c_remainObst = c_cntFileObjs;	
+	fclose(mapFile);
 
 	return true;
+}
+
+
+void CGame::printUtilities ()
+{
+	mvprintw(8,67,"   ");
+	mvprintw(8,67,"%d", c_remainObst);
+	
+	
+	mvprintw(12,67,"%d", c_score);
+	mvprintw(40,67,"%d", c_health);
+	mvprintw(4,66,"%s", cntTime.printTime().c_str());	
+}
+
+bool CGame::gameOver()
+{
+	if ( c_health == 0)
+		return true;
+	return false;
+}
+
+void CGame::gameEnding()
+{
+	clear();
+	nodelay(stdscr,false);
+
+	FILE *score = fopen("score.txt","a");
+	fprintf(score, "Nickname: %s   Map: %s   Score: %d\n", c_nickname, c_mapName, c_score);
+	fclose(score);
+
+	drawSquare(45, 60, 0, 0, (char)219);
+	attron(A_BOLD);
+	mvprintw(9,18,"END OF THE GAME");
+	mvprintw(10,10,"Your score was added to file score.txt");
+
+	attroff(A_BOLD);
+	getch();
+
 }
